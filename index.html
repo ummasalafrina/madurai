@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Madurai Clean Revolution</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet.js – free interactive maps, no API key required -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hidden-input {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mobile-app-container">
+
+        <!-- Splash Screen -->
+        <div id="splash-screen" class="screen active">
+            <div class="splash-content">
+                <div class="logo-circle">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <h1>Madurai Clean<br>Revolution</h1>
+                <p class="tagline">"Together We Make Madurai Shine"</p>
+                <div class="loading-animation">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div id="login-page" class="screen">
+            <div class="login-header">
+                <h2>Welcome Back!</h2>
+                <p>Join the clean revolution today</p>
+            </div>
+
+            <form id="login-form">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="login-name" placeholder="Enter your name" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="login-phone" placeholder="10-digit mobile number" required
+                            pattern="[0-9]{10}">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Role</label>
+                    <div class="role-selector">
+                        <div class="role-option selected" data-role="Citizen">
+                            <i class="fa-solid fa-person"></i>
+                            <span>Citizen</span>
+                        </div>
+                        <div class="role-option" data-role="Volunteer">
+                            <i class="fa-solid fa-hands-holding-circle"></i>
+                            <span>Volunteer</span>
+                        </div>
+                        <div class="role-option" data-role="Official">
+                            <i class="fa-solid fa-building-user"></i>
+                            <span>Official</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="login-role" value="Citizen" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Ward Selection</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <select id="login-ward" required>
+                            <option value="">Select your Ward</option>
+                            <option value="Ward 1 (Anna Nagar)">Ward 1 (Anna Nagar)</option>
+                            <option value="Ward 2 (K K Nagar)">Ward 2 (K K Nagar)</option>
+                            <option value="Ward 3 (Tallakulam)">Ward 3 (Tallakulam)</option>
+                            <option value="Ward 4 (Simmakkal)">Ward 4 (Simmakkal)</option>
+                            <option value="Ward 5 (Tirumangalam)">Ward 5 (Tirumangalam)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" id="login-btn" class="primary-btn">
+                    <span class="btn-text">Login</span>
+                    <div class="btn-loader hidden"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
+                </button>
+            </form>
+        </div>
+
+        <!-- Home Dashboard -->
+        <div id="home-dashboard" class="screen">
+            <div class="top-nav">
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=User&background=27ae60&color=fff" alt="Profile"
+                        id="nav-avatar" class="avatar">
+                    <div class="greeting">
+                        <span id="welcome-message">Hello User</span>
+                        <small id="role-ward-message">Citizen • Ward 1</small>
+                    </div>
+                </div>
+                <div class="nav-points" onclick="navigateTo('profile-page')">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="nav-points-val">0</span>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-trash-can"></i></div>
+                        <div class="stat-details">
+                            <h3 id="stat-reports">0</h3>
+                            <p>Reports</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fa-solid fa-broom"></i></div>
+                        <div class="stat-details">
+                            <h3 id="stat-cleanups">0</h3>
+                            <p>Cleanups</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-card report-btn" onclick="navigateTo('report-flow')">
+                        <div class="card-icon"><i class="fa-solid fa-camera"></i></div>
+                        <h3>Report Garbage</h3>
+                        <p>Spot it? Report it.</p>
+                        <div class="arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    </button>
+
+                    <button class="action-card map-btn" onclick="navigateTo('map-screen')">
+                        <div class="card-icon"><i class="fa-solid fa-map-location"></i></div>
+                        <h3>View Map</h3>
+                        <p>Live cleanups near you</p>
+                        <div class="arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    </button>
+                </div>
+
+                <div class="recent-activity">
+                    <div class="section-header">
+                        <h3>Recent Reports</h3>
+                        <span class="view-all" onclick="navigateTo('map-screen')">View Map</span>
+                    </div>
+                    <div id="dashboard-reports-list" class="reports-list">
+                        <!-- Populated by JS -->
+                        <div class="empty-state">No reports yet. Be the first!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <div class="nav-item active" onclick="navigateTo('home-dashboard')">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item" onclick="navigateTo('leaderboard-page')">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span>Leaders</span>
+                </div>
+                <div class="nav-item center-nav" onclick="navigateTo('report-flow')">
+                    <div class="center-btn"><i class="fa-solid fa-plus"></i></div>
+                </div>
+                <div class="nav-item" onclick="navigateTo('map-screen')">
+                    <i class="fa-solid fa-map"></i>
+                    <span>Map</span>
+                </div>
+                <div class="nav-item" onclick="navigateTo('profile-page')">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Profile</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Garbage Flow -->
+        <div id="report-flow" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="navigateTo('home-dashboard')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>Report Garbage</h2>
+            </div>
+
+            <div class="form-container">
+                <div class="upload-section" id="photo-upload-container">
+                    <input type="file" id="garbage-photo" accept="image/*" class="hidden-input">
+                    <label for="garbage-photo" class="upload-area">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Tap to Upload Photo</span>
+                        <small>Supported: JPG, PNG</small>
+                    </label>
+                    <div class="preview-area hidden" id="photo-preview-container">
+                        <img id="photo-preview" src="" alt="Garbage Preview">
+                        <button class="remove-photo" id="remove-photo-btn"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Location</label>
+                    <div class="location-wrapper">
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <input type="text" id="report-location" placeholder="Auto-detecting location..." readonly>
+                        </div>
+                        <button id="detect-location-btn" class="icon-btn"><i
+                                class="fa-solid fa-crosshairs"></i></button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Category</label>
+                    <div class="category-grid">
+                        <div class="category-item" data-category="Plastic">
+                            <div class="cat-icon"><i class="fa-solid fa-bottle-water"></i></div>
+                            <span>Plastic</span>
+                        </div>
+                        <div class="category-item" data-category="Food Waste">
+                            <div class="cat-icon"><i class="fa-solid fa-apple-whole"></i></div>
+                            <span>Food Waste</span>
+                        </div>
+                        <div class="category-item" data-category="Drainage">
+                            <div class="cat-icon"><i class="fa-solid fa-water"></i></div>
+                            <span>Drainage</span>
+                        </div>
+                        <div class="category-item" data-category="Construction">
+                            <div class="cat-icon"><i class="fa-solid fa-trowel-bricks"></i></div>
+                            <span>Construction</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="report-category" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Description</label>
+                    <div class="input-wrapper textarea-wrapper">
+                        <textarea id="report-desc" placeholder="Add more details about the garbage..."></textarea>
+                    </div>
+                </div>
+
+                <button id="submit-report-btn" class="primary-btn">Submit Report</button>
+            </div>
+        </div>
+
+        <!-- Map Screen (Leaflet / OpenStreetMap – no API key required) -->
+        <div id="map-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="navigateTo('home-dashboard')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>Live Map – Madurai</h2>
+                <!-- Zoom controls -->
+                <div class="map-zoom-controls">
+                    <button id="zoom-in-btn" class="zoom-btn" title="Zoom in"><i class="fa-solid fa-plus"></i></button>
+                    <button id="zoom-out-btn" class="zoom-btn" title="Zoom out"><i
+                            class="fa-solid fa-minus"></i></button>
+                    <button id="locate-me-btn" class="zoom-btn locate" title="My location"><i
+                            class="fa-solid fa-location-crosshairs"></i></button>
+                </div>
+            </div>
+
+            <div class="map-container leaflet-map-container">
+                <!-- Leaflet renders here -->
+                <div id="leaflet-map"></div>
+
+                <!-- Legend overlay -->
+                <div class="map-legend gmap-legend">
+                    <div class="legend-item"><span class="dot red"></span> Pending</div>
+                    <div class="legend-item"><span class="dot yellow"></span> In Progress</div>
+                    <div class="legend-item"><span class="dot green"></span> Resolved</div>
+                </div>
+
+                <!-- Bottom sheet for pin details -->
+                <div id="pin-details-sheet" class="bottom-sheet">
+                    <div class="sheet-handle"></div>
+                    <div class="sheet-content">
+                        <div class="sheet-header">
+                            <span class="status-badge pending" id="sheet-status">Pending</span>
+                            <span class="category-badge" id="sheet-category">Plastic</span>
+                        </div>
+                        <div class="sheet-points-row">
+                            <i class="fa-solid fa-star" style="color:#f1c40f"></i>
+                            <span id="sheet-points">+50 Points</span>
+                        </div>
+                        <img id="sheet-img" src="" class="sheet-image" alt="Garbage">
+                        <h3 id="sheet-location">Location</h3>
+                        <p id="sheet-desc">Description</p>
+                        <p class="reported-by">Reported by: <strong id="sheet-reporter">User</strong></p>
+
+                        <!-- Volunteer Action Area -->
+                        <div id="volunteer-action-area" class="hidden">
+                            <div class="divider"></div>
+                            <h4>Volunteer Action</h4>
+
+                            <div id="accept-cleanup-flow">
+                                <button id="accept-cleanup-btn" class="primary-btn outline">Accept Cleanup</button>
+                            </div>
+
+                            <div id="complete-cleanup-flow" class="hidden">
+                                <div class="upload-section small" id="cleanup-photo-container">
+                                    <input type="file" id="cleanup-photo" accept="image/*" class="hidden-input">
+                                    <label for="cleanup-photo" class="upload-area">
+                                        <i class="fa-solid fa-camera"></i>
+                                        <span>Upload "After" Photo</span>
+                                    </label>
+                                    <div class="preview-area hidden" id="cleanup-preview-container">
+                                        <img id="cleanup-preview" src="" alt="Cleaned Preview">
+                                    </div>
+                                </div>
+                                <button id="mark-cleaned-btn" class="primary-btn success" disabled>Mark as
+                                    Cleaned</button>
+                            </div>
+                        </div>
+
+                        <button class="close-sheet-btn" onclick="closeSheet()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div id="leaderboard-page" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="navigateTo('home-dashboard')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>Leaderboard</h2>
+            </div>
+
+            <div class="leaderboard-container">
+                <div class="top-three" id="top-three-container">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="leaderboard-list" id="leaderboard-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile-page" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" onclick="navigateTo('home-dashboard')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>My Profile</h2>
+            </div>
+
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-avatar-container">
+                        <img src="" alt="Profile" id="profile-avatar" class="large-avatar">
+                        <div class="role-badge" id="profile-role">Citizen</div>
+                    </div>
+                    <h2 id="profile-name">User Name</h2>
+                    <p id="profile-ward">Ward 1</p>
+                </div>
+
+                <div class="points-showcase">
+                    <div class="big-points">
+                        <i class="fa-solid fa-star"></i>
+                        <span id="profile-total-points">0</span>
+                    </div>
+                    <p>Total Points Earned</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-num" id="profile-reports">0</span>
+                        <span class="stat-label">Reports</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-num" id="profile-cleanups">0</span>
+                        <span class="stat-label">Cleanups</span>
+                    </div>
+                </div>
+
+                <div class="badges-section">
+                    <h3>My Badges</h3>
+                    <div class="badges-grid" id="profile-badges">
+                        <div class="badge-card locked" id="badge-hero">
+                            <div class="badge-icon"><i class="fa-solid fa-medal"></i></div>
+                            <h4>Street Hero</h4>
+                            <p>100+ Points</p>
+                        </div>
+                        <div class="badge-card locked" id="badge-guardian">
+                            <div class="badge-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                            <h4>Madurai Guardian</h4>
+                            <p>300+ Points</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Global Toast & Modals -->
+        <div id="toast-container" class="toast-container"></div>
+
+        <!-- Gamification Reward Popup -->
+        <div id="reward-popup" class="modal-overlay hidden">
+            <div class="reward-modal">
+                <div class="confetti">🎉</div>
+                <h2 id="reward-title">Great Work!</h2>
+                <p id="reward-message">You earned 50 Points!</p>
+                <div class="points-circle">
+                    <span id="reward-points">+50</span>
+                </div>
+                <button class="primary-btn" onclick="closeRewardPopup()">Awesome!</button>
+            </div>
+        </div>
+
+        <!-- Badge Unlock Popup -->
+        <div id="badge-popup" class="modal-overlay hidden">
+            <div class="reward-modal badge-modal">
+                <div class="confetti">🌟</div>
+                <h2>New Badge Unlocked!</h2>
+                <div class="unlocked-badge-icon" id="unlocked-badge-icon">
+                    <i class="fa-solid fa-medal"></i>
+                </div>
+                <h3 id="unlocked-badge-name">Street Hero</h3>
+                <p>Congratulations! You are making Madurai shine.</p>
+                <button class="primary-btn" onclick="closeBadgePopup()">Continue</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
